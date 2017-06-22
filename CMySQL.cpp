@@ -20,15 +20,14 @@ CMySQL::~CMySQL( void )
 bool CMySQL::my_connect( string db )
 {
 	if ( (myData = mysql_init((MYSQL*) 0)) && 
-       mysql_real_connect( myData, NULL, NULL, NULL, NULL, MYSQL_PORT,
-			   NULL, 0 ) )
+       mysql_real_connect( myData, "localhost", "test", "ww", "cpp", MYSQL_PORT, NULL, 0 ) )
     {
-		if ( mysql_select_db( myData, db.c_str() ) < 0 ) 
-		{
-			throw( "Can't select the database !\n" ) ;
-			mysql_close( myData ) ;
-			return false ;
-		}
+//		if ( mysql_select_db( myData, db.c_str() ) < 0 )
+//		{
+//			throw( "Can't select the database !\n" ) ;
+//			mysql_close( myData ) ;
+//			return false ;
+//		}
 	}
 	else 
 	{
