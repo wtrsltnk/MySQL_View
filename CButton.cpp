@@ -10,7 +10,7 @@ CButton::~CButton()
 
 bool CButton::create()
 {
-    m_hWnd = CreateWindowEx( WS_EX_STATICEDGE, "BUTTON", "->",
+    m_hWnd = CreateWindowEx( WS_EX_STATICEDGE, "BUTTON", this->getText().c_str(),
                              WS_VISIBLE | WS_CHILD,
                              m_nX, m_nY, m_nWidth, m_nHeight,
                              ParentWindow(), (HMENU)0, Application(), NULL);

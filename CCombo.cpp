@@ -10,7 +10,7 @@ CCombo::~CCombo( void )
 
 bool CCombo::create()
 {
-    m_hWnd = CreateWindowEx( WS_EX_WINDOWEDGE, "COMBOBOX", "",
+    m_hWnd = CreateWindowEx( WS_EX_WINDOWEDGE, "COMBOBOX", this->getText().c_str(),
                              WS_BORDER | WS_VISIBLE | WS_CHILD | WS_TABSTOP |
                              CBS_DROPDOWN |  CBS_HASSTRINGS,
                              m_nX, m_nY, m_nWidth, m_nHeight,

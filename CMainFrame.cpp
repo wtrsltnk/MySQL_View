@@ -31,26 +31,21 @@ CMainFrame::CMainFrame(class CApplication& application)
 
         m_pDb.create();
 
-        m_pDbGo.create();
-        m_pDbGo.setText("GO");
+        m_pDbGo.setText("GO").create();
 
-        m_pTableLbl.create();
-        m_pTableLbl.setText("Table Name");
+        m_pTableLbl.setText("Table Name").create();
 
         m_pTable.create();
 
-        m_pFieldsLbl.create();
-        m_pFieldsLbl.setText("Fields (divided with \",\")");
+        m_pFieldsLbl.setText("Fields (divided with \",\")").create();
 
         m_pFields.create();
 
-        m_pLimitLbl.create();
-        m_pLimitLbl.setText("Limit");
+        m_pLimitLbl.setText("Limit").create();
 
         m_pLimit.create();
 
-        m_pSQL.create();
-        m_pSQL.setText("select * from cpptest;");
+        m_pSQL.setText("select * from cpptest;").create();
 
         m_pData.create();
         m_pData.clear();

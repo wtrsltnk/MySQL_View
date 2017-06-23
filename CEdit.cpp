@@ -10,7 +10,7 @@ CEdit::~CEdit( void )
 
 bool CEdit::create()
 {
-    m_hWnd = CreateWindowEx( WS_EX_WINDOWEDGE, "EDIT", "",
+    m_hWnd = CreateWindowEx( WS_EX_WINDOWEDGE, "EDIT", this->getText().c_str(),
                              WS_BORDER | WS_VISIBLE | WS_CHILD |
                              ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
                              m_nX, m_nY, m_nWidth, m_nHeight,

@@ -11,7 +11,7 @@ CLabel::~CLabel( void )
 
 bool CLabel::create()
 {
-    m_hWnd = CreateWindowEx(WS_EX_WINDOWEDGE, "STATIC", "Label",
+    m_hWnd = CreateWindowEx(WS_EX_WINDOWEDGE, "STATIC", this->getText().c_str(),
                             WS_VISIBLE | WS_CHILD,
                             m_nX, m_nY, m_nWidth, m_nHeight,
                             ParentWindow(), (HMENU)0, Application(), NULL);
