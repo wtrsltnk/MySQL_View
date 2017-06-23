@@ -1,24 +1,16 @@
 #ifndef CEDIT_H
 #define CEDIT_H
 
-#include <windows.h>
+#include "CControl.h"
 #include <string>
-#include <commctrl.h>
 using namespace std;
 
-class CEdit
+class CEdit : public CControl
 {
-private:
-	HWND		m_hWnd, m_hParent;
-	HINSTANCE	m_hInstance;
-	int			m_nX, m_nY;
-	int			m_nWidth, m_nHeight;
 public:
-	CEdit( HWND, HINSTANCE, int, int, int, int );
-	~CEdit( void );
-	void create( WORD );
-	void resize( int, int, int, int );
-	string getText( void );
-	void setText( string );
+    CEdit(class CWin* parent);
+    virtual ~CEdit( void );
+
+    virtual bool create();
 };
 #endif

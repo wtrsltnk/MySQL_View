@@ -13,16 +13,22 @@ FIND_PATH(MYSQL_INCLUDE_DIR
     )
 
 add_executable(MySQL_View WIN32
+    CApplication.cpp
+    CApplication.h
     CButton.cpp
     CButton.h
     CCombo.cpp
     CCombo.h
+    CControl.cpp
+    CControl.h
     CEdit.cpp
     CEdit.h
     CLabel.cpp
     CLabel.h
     CListView.cpp
     CListView.h
+    CLoginWindow.cpp
+    CLoginWindow.h
     CMainFrame.cpp
     CMainFrame.h
     CMySQL.cpp
@@ -31,9 +37,12 @@ add_executable(MySQL_View WIN32
     CStatusBar.h
     CWin.cpp
     CWin.h
+    Delegate.h
+    IApplicationWindow.h
+    platform.h
+    platform-win32.cpp
     resource.h
     resource.rc
-    WinMain.cpp
     )
 
 target_compile_features(MySQL_View

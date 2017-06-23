@@ -1,119 +1,154 @@
 #include "CWin.h"
-#include <tchar.h>
+#include "CApplication.h"
+#include "CControl.h"
+#include "CButton.h"
 
-//////////////////////////////////////////////////////////////////
-// Static Initialisatie
-//////////////////////////////////////////////////////////////////
-static CWin * g_pCWin		= NULL;
-HINSTANCE CWin::m_hInstance = GetModuleHandle(NULL);
+#include <tchar.h>
+#include <stdio.h>
+#include <iostream>
 
 //////////////////////////////////////////////////////////////////
 // Koppeling WIN32 -> Klasse
 //////////////////////////////////////////////////////////////////
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK CWin::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	return g_pCWin->MsgProc(hWnd, uMsg, wParam, lParam);
+    auto cWin = (CWin*)GetWindowLongPtr(hWnd, GWL_USERDATA);
+
+    if (cWin != nullptr)
+    {
+        if (uMsg == WM_DESTROY)
+        {
+            cWin->m_application.removeWindow(cWin->Window());
+            auto result = cWin->MsgProc(uMsg, wParam, lParam);
+            SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)NULL);
+            delete cWin;
+            return result;
+        }
+        return cWin->MsgProc(uMsg, wParam, lParam);
+    }
+
+    switch (uMsg)
+    {
+    case WM_CREATE:
+    {
+        cWin = (CWin*)(((LPCREATESTRUCT)lParam)->lpCreateParams);
+        cWin->m_hWnd = hWnd;
+        SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)cWin);
+        return cWin->MsgProc(uMsg, wParam, lParam);
+    }
+    default:
+    {
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    }
+    }
 }
 
 //////////////////////////////////////////////////////////////////
 // Constructors/Destructors
 //////////////////////////////////////////////////////////////////
-CWin::CWin()
+CWin::CWin(CApplication& application)
+    : IApplicationWindow(application)
 {
-	g_pCWin		 = this;
-
-	this->m_hWnd = NULL;
-	this->m_dwCreationFlags  = 0L;
-	this->m_dwWindowStyle	 = WS_OVERLAPPEDWINDOW;
-	this->m_dwExWindowStyle	 = WS_EX_OVERLAPPEDWINDOW;
-	this->m_dwCreationFlags  = SW_SHOW;
-	this->m_PosX			 = CW_USEDEFAULT;	
-	this->m_PosY			 = CW_USEDEFAULT;	
-	this->m_dwCreationWidth  = CW_USEDEFAULT;
-	this->m_dwCreationHeight = CW_USEDEFAULT;
-	this->m_hbrWindowColor	 = (HBRUSH)(COLOR_WINDOW+1);
-	this->m_hIcon			 = LoadIcon(m_hInstance, (LPCTSTR)IDI_APPLICATION);
-	this->m_strWindowTitle	 = _T("Skelet Programma HI Blok 1.4");
-	this->m_hMenu			 = NULL; 	
+    this->m_dwCreationFlags  = 0L;
+    this->m_dwWindowStyle	 = WS_OVERLAPPEDWINDOW;
+    this->m_dwExWindowStyle	 = WS_EX_OVERLAPPEDWINDOW;
+    this->m_dwCreationFlags  = SW_SHOW;
+    this->m_PosX			 = CW_USEDEFAULT;
+    this->m_PosY			 = CW_USEDEFAULT;
+    this->m_dwCreationWidth  = CW_USEDEFAULT;
+    this->m_dwCreationHeight = CW_USEDEFAULT;
+    this->m_hbrWindowColor	 = (HBRUSH)(COLOR_WINDOW+1);
+    this->m_hIcon			 = LoadIcon(Application(), (LPCTSTR)IDI_APPLICATION);
+    this->m_strWindowTitle	 = _T("Skelet Programma HI Blok 1.4");
+    this->m_hMenu			 = NULL;
 }
 
 CWin::~CWin()
-{
-}
-
+{ }
 
 //////////////////////////////////////////////////////////////////
 // Methoden
 //////////////////////////////////////////////////////////////////
-int CWin::Run()
+bool CWin::create()
 {
-	MSG msg;
+    WNDCLASSEX wcex;
 
-	while (GetMessage(&msg, NULL, 0, 0)) 
-	{
-		if (!TranslateAccelerator(msg.hwnd, m_hAccelTable, &msg)) 
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+    wcex.cbSize = sizeof(WNDCLASSEX);
 
-	}	return msg.wParam;
-}
+    wcex.style			= CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc	= (WNDPROC)WndProc;
+    wcex.cbClsExtra		= 0;
+    wcex.cbWndExtra		= 0;
+    wcex.hInstance		= Application();
+    wcex.hIcon			= m_hIcon;
+    wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground	= m_hbrWindowColor;
+    wcex.lpszMenuName	= NULL;
+    wcex.lpszClassName	= _T("window");
+    wcex.hIconSm		= NULL;
 
-HRESULT CWin::Create()
-{
-	WNDCLASSEX wcex;
+    ::RegisterClassEx(&wcex);
 
-	wcex.cbSize = sizeof(WNDCLASSEX); 
+    m_hWnd = ::CreateWindowEx(m_dwExWindowStyle, _T("window"),
+                              m_strWindowTitle, m_dwWindowStyle,
+                              m_PosX, m_PosY, m_dwCreationWidth, m_dwCreationHeight,
+                              NULL, m_hMenu, Application(), (LPVOID)this);
 
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= (WNDPROC)WndProc;
-	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= m_hInstance;
-	wcex.hIcon			= m_hIcon;
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= m_hbrWindowColor;
-	wcex.lpszMenuName	= NULL;
-	wcex.lpszClassName	= _T("window");
-	wcex.hIconSm		= NULL;
+    if (!m_hWnd)
+    {
+        return false;
+    }
 
-	::RegisterClassEx(&wcex);
+    ::ShowWindow(m_hWnd, m_dwCreationFlags);
+    ::UpdateWindow(m_hWnd);
 
-	m_hWnd = ::CreateWindowEx(m_dwExWindowStyle,_T("window"), m_strWindowTitle, m_dwWindowStyle,
-	  m_PosX, m_PosY, m_dwCreationWidth, m_dwCreationHeight, NULL, m_hMenu, m_hInstance, NULL);
-
-	if (!m_hWnd)
-	{
-	  return FALSE;
-	}
-
-	::ShowWindow(m_hWnd, m_dwCreationFlags);
-	::UpdateWindow(m_hWnd);
-
-	return TRUE;
+    return true;
 
 }
 
-LRESULT CWin::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CWin::MsgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	int wmId;
-	int wmEvent;
+    switch (uMsg)
+    {
+    case WM_CREATE:
+    {
+        CreateArguments args;
+        this->onCreate(args);
+        break;
+    }
+    case WM_SIZE:
+    {
+        ResizeArguments args;
+        args.newWidth = LOWORD(lParam);
+        args.newHeight = HIWORD(lParam);
+        this->onResize(args);
+        break;
+    }
+    case WM_COMMAND:
+    {
+        if (lParam != 0)
+        {
+            auto btn = static_cast<CButton*>((void*)GetWindowLongPtr((HWND)lParam, GWL_USERDATA));
+            if (btn != nullptr)
+            {
+                ButtonClickedArgs args;
+                btn->onClicked(args);
+            }
+        }
+        else
+        {
+            // Menu item clicked
+            if (HIWORD(wParam) == 0)
+            {
+                MenuItemClickedArguments args;
+                args.id = int(LOWORD(wParam));
+                this->onMenuItemClicked(args);
+            }
+        }
 
-	if (!m_hWnd)
-		m_hWnd = hWnd;
+        break;
+    }
+    }
 
-	switch (uMsg) 
-	{
-		case WM_COMMAND:
-			wmId    = LOWORD(wParam); 
-			wmEvent = HIWORD(wParam); 
-			break;
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			break;
-		default:
-			return DefWindowProc(hWnd, uMsg, wParam, lParam);
-   }
-   return 0;
+    return DefWindowProc(this->m_hWnd, uMsg, wParam, lParam);
 }

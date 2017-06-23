@@ -12,24 +12,23 @@
 #include "resource.h"
 
 #include <time.h>
-#include <strstream>
 using namespace std;
 
 class CMainFrame : public CWin
 {
 private:
-	CLabel *m_pDbLbl;
-	CEdit *m_pDb;
-	CButton *m_pDbGo;
-	CLabel *m_pTableLbl;
-	CEdit *m_pTable;
-	CLabel *m_pFieldsLbl;
-	CEdit *m_pFields;
-	CLabel *m_pLimitLbl;
-	CEdit *m_pLimit;
-	CListView *m_pData;
-	CEdit *m_pSQL;
-	CStatusBar *m_pStatus;
+    CLabel m_pDbLbl;
+    CEdit m_pDb;
+    CButton m_pDbGo;
+    CLabel m_pTableLbl;
+    CEdit m_pTable;
+    CLabel m_pFieldsLbl;
+    CEdit m_pFields;
+    CLabel m_pLimitLbl;
+    CEdit m_pLimit;
+    CListView m_pData;
+    CEdit m_pSQL;
+    CStatusBar m_pStatus;
 	CMySQL	*m_pMy;
 
 	struct tm *newtime;
@@ -38,12 +37,12 @@ private:
 	long rtime;
 
 public:
-	CMainFrame();
-	~CMainFrame();
+    CMainFrame(class CApplication& application);
+    virtual ~CMainFrame();
 
 	int exec_sql( string );
 
-	LRESULT MsgProc(HWND, UINT, WPARAM, LPARAM);
+    void onGo(const ButtonClickedArgs& args);
 };
 
 #endif

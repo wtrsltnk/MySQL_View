@@ -1,7 +1,6 @@
 #ifndef CMYSQL_H
 #define CMYSQL_H
 
-#include    <windows.h>
 #include	<stdio.h>
 #include	<string>
 using namespace std;
@@ -18,7 +17,7 @@ private:
 	int			num_rows, cur_row, num_cols, num_dbs;
 public:
 	CMySQL( void );
-	~CMySQL( void );
+    virtual ~CMySQL( void );
 
     bool my_connect( string );
 	bool my_disconnect( void );

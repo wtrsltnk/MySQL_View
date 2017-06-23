@@ -1,22 +1,19 @@
 #ifndef CSTATUSBAR_H
 #define CSTATUSBAR_H
 
-#include <windows.h>
+#include "CControl.h"
 #include "resource.h"
 #include <string>
-#include <commctrl.h>
 using namespace std;
 
-class CStatusBar
+class CStatusBar : public CControl
 {
-private:
-	HWND m_hStatusBar, m_hParent;
-	HINSTANCE m_hInstance;
 public:
-	CStatusBar(HINSTANCE, HWND);
-	~CStatusBar();
-	void CreateStatusBar();
-	void setItemText(int, string);
-	void Resize(WPARAM, LPARAM);
+    CStatusBar(class CWin* parent);
+    virtual ~CStatusBar();
+
+    virtual bool create();
+    void setItemText(int, string);
+    virtual void resize(int x, int y, int width, int height);
 };
 #endif
