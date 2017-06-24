@@ -3,7 +3,6 @@
 
 #include "platform.h"
 #include "Delegate.h"
-#include "Log.h"
 #include <string>
 
 enum class ControlTypes
@@ -23,7 +22,7 @@ public:
 
 class CControl
 {
-    static Log* _logger;
+    static class Log* _logger;
 protected:
     const ControlTypes _type;
     const char* _className;

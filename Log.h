@@ -17,7 +17,7 @@ class Log
     std::string _type;
     Log(const std::string& type);
 public:
-    template<class T> static Log* Create()
+    template<class T> static Log* create()
     {
         return new Log(typeid(T).name());
     }

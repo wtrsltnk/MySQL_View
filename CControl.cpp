@@ -1,9 +1,10 @@
 #include "CControl.h"
 #include "CWin.h"
 #include "CApplication.h"
+#include "Log.h"
 #include<fmt/format.h>
 
-Log* CControl::_logger = Log::Create<CControl>();
+Log* CControl::_logger = Log::create<CControl>();
 
 CControl::CControl(CWin* parent, const ControlTypes type, const char* className)
     : _type(type), _className(className), _windowStyles(0), _windowStylesEx(0), _parentHandle(parent)
