@@ -6,15 +6,11 @@
 /////////////////////////////////////
 
 CStatusBar::CStatusBar(class CWin* parent)
-    : CControl(parent)
+    : CControl(parent, ControlTypes::StatusBar, STATUSCLASSNAME)
 { }
 
 CStatusBar::~CStatusBar()
 { }
-
-/////////////////////////////////////
-// Memberfuncties                  //
-/////////////////////////////////////
 
 bool CStatusBar::create()
 {

@@ -11,6 +11,5 @@ public:
     CEdit(class CWin* parent);
     virtual ~CEdit( void );
 
-    virtual bool create();
 };
 #endif

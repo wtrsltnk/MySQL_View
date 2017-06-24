@@ -8,42 +8,6 @@
 #include <iostream>
 
 //////////////////////////////////////////////////////////////////
-// Koppeling WIN32 -> Klasse
-//////////////////////////////////////////////////////////////////
-LRESULT CALLBACK CWin::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    auto cWin = (CWin*)GetWindowLongPtr(hWnd, GWL_USERDATA);
-
-    if (cWin != nullptr)
-    {
-        if (uMsg == WM_DESTROY)
-        {
-            cWin->m_application.removeWindow(cWin->Window());
-            auto result = cWin->MsgProc(uMsg, wParam, lParam);
-            SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)NULL);
-            delete cWin;
-            return result;
-        }
-        return cWin->MsgProc(uMsg, wParam, lParam);
-    }
-
-    switch (uMsg)
-    {
-    case WM_CREATE:
-    {
-        cWin = (CWin*)(((LPCREATESTRUCT)lParam)->lpCreateParams);
-        cWin->m_hWnd = hWnd;
-        SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)cWin);
-        return cWin->MsgProc(uMsg, wParam, lParam);
-    }
-    default:
-    {
-        return DefWindowProc(hWnd, uMsg, wParam, lParam);
-    }
-    }
-}
-
-//////////////////////////////////////////////////////////////////
 // Constructors/Destructors
 //////////////////////////////////////////////////////////////////
 CWin::CWin(CApplication& application)
@@ -89,21 +53,58 @@ bool CWin::create()
 
     ::RegisterClassEx(&wcex);
 
-    m_hWnd = ::CreateWindowEx(m_dwExWindowStyle, _T("window"),
+    _windowHandle = ::CreateWindowEx(m_dwExWindowStyle, _T("window"),
                               m_strWindowTitle, m_dwWindowStyle,
                               m_PosX, m_PosY, m_dwCreationWidth, m_dwCreationHeight,
                               NULL, m_hMenu, Application(), (LPVOID)this);
 
-    if (!m_hWnd)
+    if (!_windowHandle)
     {
         return false;
     }
 
-    ::ShowWindow(m_hWnd, m_dwCreationFlags);
-    ::UpdateWindow(m_hWnd);
+    ::ShowWindow(_windowHandle, m_dwCreationFlags);
+    ::UpdateWindow(_windowHandle);
 
     return true;
 
+}
+
+LRESULT CALLBACK CWin::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    auto cWin = (CWin*)GetWindowLongPtr(hWnd, GWL_USERDATA);
+
+    if (cWin != nullptr)
+    {
+        if (uMsg == WM_DESTROY)
+        {
+            cWin->_application.removeWindow(cWin->Window());
+            auto result = cWin->MsgProc(uMsg, wParam, lParam);
+            SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)NULL);
+
+            DestroyArguments args;
+            cWin->onDestroy(args);
+
+            delete cWin;
+            return result;
+        }
+        return cWin->MsgProc(uMsg, wParam, lParam);
+    }
+
+    switch (uMsg)
+    {
+    case WM_CREATE:
+    {
+        cWin = (CWin*)(((LPCREATESTRUCT)lParam)->lpCreateParams);
+        cWin->_windowHandle = hWnd;
+        SetWindowLongPtr(hWnd, GWL_USERDATA, (LONG_PTR)cWin);
+        return cWin->MsgProc(uMsg, wParam, lParam);
+    }
+    default:
+    {
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    }
+    }
 }
 
 LRESULT CWin::MsgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -128,11 +129,15 @@ LRESULT CWin::MsgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         if (lParam != 0)
         {
-            auto btn = static_cast<CButton*>((void*)GetWindowLongPtr((HWND)lParam, GWL_USERDATA));
-            if (btn != nullptr)
+            auto cc = reinterpret_cast<CControl*>((void*)GetWindowLongPtr((HWND)lParam, GWL_USERDATA));
+            if (cc != nullptr && cc->getType() == ControlTypes::Button)
             {
-                ButtonClickedArgs args;
-                btn->onClicked(args);
+                auto btn = dynamic_cast<CButton*>(cc);
+                if (btn != nullptr)
+                {
+                    ButtonClickedArgs args;
+                    btn->onClicked(args);
+                }
             }
         }
         else
@@ -150,5 +155,5 @@ LRESULT CWin::MsgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
     }
 
-    return DefWindowProc(this->m_hWnd, uMsg, wParam, lParam);
+    return DefWindowProc(this->_windowHandle, uMsg, wParam, lParam);
 }

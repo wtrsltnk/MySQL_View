@@ -2,22 +2,15 @@
 #include <commctrl.h>
 
 CCombo::CCombo(class CWin* parent)
-    : CControl(parent)
-{ }
+    : CControl(parent, ControlTypes::Combo, "COMBOBOX")
+{
+    this->_windowStyles = WS_BORDER | WS_VISIBLE | WS_CHILD | WS_TABSTOP |
+            CBS_DROPDOWN |  CBS_HASSTRINGS;
+    this->_windowStylesEx = WS_EX_WINDOWEDGE;
+}
 
 CCombo::~CCombo( void )
 { }
-
-bool CCombo::create()
-{
-    m_hWnd = CreateWindowEx( WS_EX_WINDOWEDGE, "COMBOBOX", this->getText().c_str(),
-                             WS_BORDER | WS_VISIBLE | WS_CHILD | WS_TABSTOP |
-                             CBS_DROPDOWN |  CBS_HASSTRINGS,
-                             m_nX, m_nY, m_nWidth, m_nHeight,
-                             ParentWindow(), (HMENU)0, Application(), (LPVOID)this);
-
-    return m_hWnd != NULL;
-}
 
 void CCombo::addItem( string text )
 {

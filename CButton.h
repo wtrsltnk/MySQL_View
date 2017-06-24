@@ -18,8 +18,6 @@ public:
     CButton(class CWin* parent);
     virtual ~CButton( void );
 
-    virtual bool create();
-
     Delegate<const ButtonClickedArgs&> onClicked;
 };
 #endif

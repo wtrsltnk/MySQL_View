@@ -2,19 +2,13 @@
 #include <commctrl.h>
 
 CEdit::CEdit(class CWin* parent )
-    : CControl(parent)
-{ }
+    : CControl(parent, ControlTypes::Edit, "EDIT")
+{
+    this->_windowStyles = WS_BORDER | WS_VISIBLE |
+            WS_CHILD | ES_MULTILINE | ES_AUTOVSCROLL |
+            ES_AUTOHSCROLL;
+    this->_windowStylesEx = WS_EX_STATICEDGE;
+}
 
 CEdit::~CEdit( void )
 { }
-
-bool CEdit::create()
-{
-    m_hWnd = CreateWindowEx( WS_EX_WINDOWEDGE, "EDIT", this->getText().c_str(),
-                             WS_BORDER | WS_VISIBLE | WS_CHILD |
-                             ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
-                             m_nX, m_nY, m_nWidth, m_nHeight,
-                             ParentWindow(), (HMENU)0, Application(), NULL);
-
-    return m_hWnd != NULL;
-}

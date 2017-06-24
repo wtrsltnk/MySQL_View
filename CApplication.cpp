@@ -3,12 +3,12 @@
 
 ApplicationHandle IApplicationWindow::Application() const
 {
-    return this->m_application.Instance();
+    return this->_application.Instance();
 }
 
 WindowHandle IApplicationWindow::Window() const
 {
-    return this->m_hWnd;
+    return this->_windowHandle;
 }
 
 CApplication::CApplication(ApplicationHandle instance)

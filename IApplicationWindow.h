@@ -10,6 +10,13 @@ public:
     virtual ~CreateArguments() { }
 };
 
+
+class DestroyArguments
+{
+public:
+    virtual ~DestroyArguments() { }
+};
+
 class ResizeArguments
 {
 public:
@@ -30,11 +37,11 @@ public:
 class IApplicationWindow
 {
 protected:
-    class CApplication& m_application;
-    WindowHandle  m_hWnd;
+    class CApplication& _application;
+    WindowHandle  _windowHandle;
 
     IApplicationWindow(class CApplication& application)
-        : m_application(application), m_hWnd(0)
+        : _application(application), _windowHandle(0)
     { }
 public:
     virtual ~IApplicationWindow() { }
@@ -45,6 +52,7 @@ public:
     virtual bool create() = 0;
 
     Delegate<const CreateArguments&> onCreate;
+    Delegate<const DestroyArguments&> onDestroy;
     Delegate<const ResizeArguments&> onResize;
     Delegate<const MenuItemClickedArguments&> onMenuItemClicked;
 

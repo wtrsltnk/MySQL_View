@@ -2,20 +2,11 @@
 #include <commctrl.h>
 
 CButton::CButton(class CWin* parent)
-    : CControl(parent)
-{ }
+    : CControl(parent, ControlTypes::Button, "BUTTON")
+{
+    this->_windowStyles = WS_VISIBLE | WS_CHILD;
+    this->_windowStylesEx = WS_EX_STATICEDGE;
+}
 
 CButton::~CButton()
 { }
-
-bool CButton::create()
-{
-    m_hWnd = CreateWindowEx( WS_EX_STATICEDGE, "BUTTON", this->getText().c_str(),
-                             WS_VISIBLE | WS_CHILD,
-                             m_nX, m_nY, m_nWidth, m_nHeight,
-                             ParentWindow(), (HMENU)0, Application(), NULL);
-
-    SetWindowLongPtr(m_hWnd, GWL_USERDATA, (LONG_PTR)this);
-
-    return m_hWnd != NULL;
-}

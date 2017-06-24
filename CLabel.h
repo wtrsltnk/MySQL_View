@@ -10,7 +10,5 @@ class CLabel : public CControl
 public:
     CLabel(class CWin* parent);
     virtual ~CLabel( void );
-
-    virtual bool create();
 };
 #endif

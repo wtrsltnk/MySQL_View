@@ -2,19 +2,12 @@
 #include <commctrl.h>
 
 CLabel::CLabel(class CWin* parent)
-    : CControl(parent)
-{ }
+    : CControl(parent, ControlTypes::Label, "STATIC")
+{
+    this->_windowStyles = WS_VISIBLE | WS_CHILD;
+    this->_windowStylesEx = WS_EX_WINDOWEDGE;
+}
 
 CLabel::~CLabel( void )
 {
-}
-
-bool CLabel::create()
-{
-    m_hWnd = CreateWindowEx(WS_EX_WINDOWEDGE, "STATIC", this->getText().c_str(),
-                            WS_VISIBLE | WS_CHILD,
-                            m_nX, m_nY, m_nWidth, m_nHeight,
-                            ParentWindow(), (HMENU)0, Application(), NULL);
-
-    return m_hWnd != NULL;
 }

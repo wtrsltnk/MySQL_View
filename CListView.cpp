@@ -2,7 +2,7 @@
 #include <commctrl.h>
 
 CListView::CListView(class CWin* parent)
-    : CControl(parent)
+    : CControl(parent, ControlTypes::ListView, WC_LISTVIEW)
 {
     this->num_cols = 0;
 }
@@ -12,7 +12,7 @@ CListView::~CListView( void )
 
 bool CListView::create()
 {
-    m_hWnd = CreateWindowEx( WS_EX_WINDOWEDGE, WC_LISTVIEW, "",
+    m_hWnd = CreateWindowEx( WS_EX_WINDOWEDGE, this->_className, "",
                              WS_BORDER | WS_VISIBLE | WS_CHILD | WS_TABSTOP |
                              LVS_REPORT | LVS_SHOWSELALWAYS,
                              m_nX, m_nY, m_nWidth, m_nHeight,

@@ -11,7 +11,6 @@ public:
     CCombo(class CWin* parent);
     virtual ~CCombo( void );
 
-    virtual bool create();
     void addItem( string );
 };
 #endif
