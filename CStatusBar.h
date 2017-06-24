@@ -8,12 +8,14 @@ using namespace std;
 
 class CStatusBar : public CControl
 {
+    int _partCount;
+    int* _parts;
 public:
     CStatusBar(class CWin* parent);
     virtual ~CStatusBar();
 
-    virtual bool create();
-    void setItemText(int, string);
+    CStatusBar& setParts(int count, int parts[]);
+    CStatusBar& setItemText(int, string);
     virtual void resize(int x, int y, int width, int height);
 };
 #endif

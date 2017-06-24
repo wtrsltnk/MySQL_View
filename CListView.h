@@ -8,11 +8,11 @@ using namespace std;
 class CListView : public CControl
 {
     int num_cols;
+    WindowHandle _header;
 public:
     CListView(class CWin* parent);
     virtual ~CListView( void );
 
-    virtual bool create();
     void addCol( string, int );
     void addItem( string, int );
     void addSubItem( string, int, int );

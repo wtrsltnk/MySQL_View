@@ -6,39 +6,43 @@
 /////////////////////////////////////
 
 CStatusBar::CStatusBar(class CWin* parent)
-    : CControl(parent, ControlTypes::StatusBar, STATUSCLASSNAME)
-{ }
+    : CControl(parent, ControlTypes::StatusBar, STATUSCLASSNAME), _partCount(0)
+{
+    this->_windowStyles = WS_CHILD | WS_VISIBLE;
+    this->onCreateControl += [this] (const CreateControlArgs& args)
+    {
+        if (this->_partCount > 0)
+        {
+            this->setParts(this->_partCount, this->_parts);
+        }
+    };
+}
 
 CStatusBar::~CStatusBar()
 { }
 
-bool CStatusBar::create()
+CStatusBar& CStatusBar::setParts(int count, int parts[])
 {
-    const int noParts = 3;
-    int parts[noParts];
+    this->_partCount = count;
+    this->_parts = parts;
 
-    //maak drie statusbar vakjes aan
-    parts[0] = 300;
-    parts[1] = parts[0] + 350;
-    parts[2] = -1;
+    if (this->_windowHandle != 0)
+    {
+        SendMessage(_windowHandle, SB_SETPARTS, count, (LPARAM)parts);
+    }
 
-    //creeer de statusbar window
-    m_hWnd = CreateStatusWindow(WS_CHILD | WS_VISIBLE, "", ParentWindow(), 1);
-
-    //voeg de aangemaakte vakjes toe
-    SendMessage(m_hWnd, SB_SETPARTS, noParts, (LPARAM)parts);
-    SendMessage(m_hWnd, SB_SETMINHEIGHT, 16, 0);
-
-    return m_hWnd != NULL;
+    return *this;
 }
 
 void CStatusBar::resize(int x, int y, int width, int height)
 {
-    SendMessage(m_hWnd, WM_SIZE, NULL, MAKELPARAM(width, height));
+    SendMessage(_windowHandle, WM_SIZE, 0, MAKELPARAM(width, height));
 }
 
-void CStatusBar::setItemText(int index, string strText)
+CStatusBar& CStatusBar::setItemText(int index, string strText)
 {
     //set de text in een van de statusbar vakjes
-    SendMessage(m_hWnd, SB_SETTEXT, (WPARAM) index-1|0, (LPARAM)strText.c_str());
+    SendMessage(_windowHandle, SB_SETTEXT, (WPARAM) index-1|0, (LPARAM)strText.c_str());
+
+    return *this;
 }

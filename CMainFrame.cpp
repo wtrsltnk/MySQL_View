@@ -51,7 +51,8 @@ CMainFrame::CMainFrame(class CApplication& application)
         m_pData.clear();
         m_pData.addCol("Enter SQL statement.", 400);
 
-        m_pStatus.create();
+        int parts[] = { 300, 450, -1 };
+        this->m_pStatus.setParts(3, parts).create();
     };
 
     this->onResize += [this] (const ResizeArguments& args)

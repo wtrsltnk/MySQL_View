@@ -14,5 +14,5 @@ CCombo::~CCombo( void )
 
 void CCombo::addItem( string text )
 {
-    SendMessage( m_hWnd, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)&text );
+    SendMessage( _windowHandle, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)&text );
 }

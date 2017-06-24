@@ -7,12 +7,14 @@ find_library(MYSQL_LIBRARY
     PATHS ${CMAKE_PREFIX_PATH}
     )
 
-FIND_PATH(MYSQL_INCLUDE_DIR
+find_path(MYSQL_INCLUDE_DIR
     NAMES mysql.h
     PATHS ${CMAKE_PREFIX_PATH}
     )
 
 add_executable(MySQL_View WIN32
+    Log.cpp
+    Log.h
     CApplication.cpp
     CApplication.h
     CButton.cpp
@@ -43,6 +45,7 @@ add_executable(MySQL_View WIN32
     platform-win32.cpp
     resource.h
     resource.rc
+    fmt/fmt/format.cc
     )
 
 target_compile_features(MySQL_View
@@ -53,6 +56,7 @@ target_compile_features(MySQL_View
 
 target_include_directories(MySQL_View
     PRIVATE ${MYSQL_INCLUDE_DIR}
+    PRIVATE fmt
     )
 
 target_link_libraries(MySQL_View

@@ -1,9 +1,12 @@
 #include "CControl.h"
 #include "CWin.h"
 #include "CApplication.h"
+#include<fmt/format.h>
+
+Log* CControl::_logger = Log::Create<CControl>();
 
 CControl::CControl(CWin* parent, const ControlTypes type, const char* className)
-    : _type(type), _className(className), m_parent(parent)
+    : _type(type), _className(className), _windowStyles(0), _windowStylesEx(0), _parentHandle(parent)
 { }
 
 CControl::~CControl()
@@ -11,28 +14,38 @@ CControl::~CControl()
 
 bool CControl::create()
 {
-    m_hWnd = CreateWindowExA(this->_windowStylesEx, this->_className,
+    _windowHandle = CreateWindowEx(this->_windowStylesEx, this->_className,
                              this->getText().c_str(), this->_windowStyles,
-                             this->m_nX, this->m_nY, this->m_nWidth, this->m_nHeight,
+                             this->_x, this->_y, this->_width, this->_height,
                              ParentWindow(), (HMENU)0, Application(), NULL);
 
-    SetWindowLongPtr(m_hWnd, GWL_USERDATA, (LONG_PTR)this);
+    auto err = GetLastError();
+    if (err != ERROR_SUCCESS)
+    {
+        _logger->error(fmt::format("error creating CControl due to error code {}", err));
+        return false;
+    }
 
-    return m_hWnd != NULL;
+    SetWindowLongPtr(_windowHandle, GWL_USERDATA, (LONG_PTR)this);
+
+    CreateControlArgs args;
+    this->onCreateControl(args);
+
+    return _windowHandle != NULL;
 }
 
-ApplicationHandle CControl::Application() const { return this->m_parent->Application(); }
+ApplicationHandle CControl::Application() const { return this->_parentHandle->Application(); }
 
-WindowHandle CControl::ParentWindow() const { return this->m_parent->_windowHandle; }
+WindowHandle CControl::ParentWindow() const { return this->_parentHandle->_windowHandle; }
 
 void CControl::resize( int x, int y, int width, int height )
 {
-    this->m_nX = x;
-    this->m_nY = y;
-    this->m_nWidth = width;
-    this->m_nHeight = height;
+    this->_x = x;
+    this->_y = y;
+    this->_width = width;
+    this->_height = height;
 
-    MoveWindow( m_hWnd, m_nX, m_nY, m_nWidth, m_nHeight, true );
+    MoveWindow( _windowHandle, _x, _y, _width, _height, true );
 }
 
 ControlTypes CControl::getType() const { return this->_type; }
@@ -46,15 +59,15 @@ std::string CControl::getText() const
 //    this->m_strText = std::string(buffer);
 //    delete []buffer;
 
-    return this->m_strText;
+    return this->_text;
 }
 
 CControl& CControl::setText(const std::string& text)
 {
-    this->m_strText = text;
-    if (m_hWnd != nullptr)
+    this->_text = text;
+    if (_windowHandle != nullptr)
     {
-        SendMessage(m_hWnd, WM_SETTEXT, 0, (LPARAM)text.c_str());
+        SendMessage(_windowHandle, WM_SETTEXT, 0, (LPARAM)text.c_str());
     }
 
     return *this;
