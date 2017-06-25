@@ -47,9 +47,9 @@ CMainFrame::CMainFrame(class CApplication& application)
 
         m_pSQL.setText("select * from cpptest;").create();
 
-        m_pData.create();
-        m_pData.clear();
-        m_pData.addCol("Enter SQL statement.", 400);
+        m_pData.clear()
+                .addCol("Enter SQL statement.", 400)
+                .create();
 
         int parts[] = { 300, 450, -1 };
         this->m_pStatus.setParts(3, parts).create();

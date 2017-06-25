@@ -18,13 +18,20 @@ CListView::CListView(class CWin* parent)
                                      HDS_HORZ|HDS_BUTTONS,
                                      _x, _y, _width+10, _height,
                                      _windowHandle, NULL, Application(), NULL );
+
+        int i = 0;
+        for (LVCOLUMN col : this->_columns)
+        {
+            ListView_InsertColumn( _windowHandle, i++, &col);
+        }
+        this->_columns.clear();
     };
 }
 
 CListView::~CListView( void )
 { }
 
-void CListView::addCol( string text, int nWidth )
+CListView& CListView::addCol( string text, int nWidth )
 {
     LVCOLUMN lvc;
 
@@ -33,11 +40,19 @@ void CListView::addCol( string text, int nWidth )
     lvc.cchTextMax = 255;
     lvc.cx = nWidth;
 
-    ListView_InsertColumn( _windowHandle, 100, &lvc );
-    num_cols++;
+    if (this->_windowHandle != 0)
+    {
+        ListView_InsertColumn( _windowHandle, 100, &lvc );
+    }
+    else
+    {
+        this->_columns.push_back(lvc);
+    }
+
+    return *this;
 }
 
-void CListView::addItem( string text, int row )
+CListView& CListView::addItem( string text, int row )
 {
     LV_ITEM lvi;
 
@@ -50,19 +65,24 @@ void CListView::addItem( string text, int row )
     lvi.pszText = const_cast<char *>(text.c_str());
 
     ListView_InsertItem(_windowHandle, &lvi);
+
+    return *this;
 }
 
-void CListView::addSubItem( string text, int row, int col )
+CListView& CListView::addSubItem( string text, int row, int col )
 {
     ListView_SetItemText( _windowHandle, row, col, const_cast<char *>(text.c_str()) );
+
+    return *this;
 }
 
-
-void CListView::clear()
+CListView& CListView::clear()
 {
     for ( int i=0; i < num_cols; i++ )
     {
         ListView_DeleteColumn( _windowHandle, 0 );
     }
     ListView_DeleteAllItems(_windowHandle);
+
+    return *this;
 }
