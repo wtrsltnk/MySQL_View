@@ -128,32 +128,25 @@ int CMainFrame::exec_sql(string sql)
     int i, j;
 
     m_pMy = new CMySQL();
-    try
+    if (!m_pMy->my_connect(m_pDb.getText())) return 0;
+    m_pMy->my_query(sql);
+
+    m_pData.clear();
+
+    for (i=0; i < m_pMy->my_num_cols(); i++)
+        m_pData.addCol(m_pMy->my_field(i), 100);
+
+    for (i=0; i < m_pMy->my_num_rows(); i++)
     {
-        m_pMy->my_connect(m_pDb.getText());
-        m_pMy->my_query(sql);
-
-        m_pData.clear();
-
-        for (i=0; i < m_pMy->my_num_cols(); i++)
-            m_pData.addCol(m_pMy->my_field(i), 100);
-
-        for (i=0; i < m_pMy->my_num_rows(); i++)
+        m_pMy->my_next_row();
+        m_pData.addItem(m_pMy->my_return_row()[0], i);
+        for (j=0; j < m_pMy->my_num_cols(); j++)
         {
-            m_pMy->my_next_row();
-            m_pData.addItem(m_pMy->my_return_row()[0], i);
-            for (j=0; j < m_pMy->my_num_cols(); j++)
-            {
-                if (m_pMy->my_return_row()[j] != NULL)
-                    m_pData.addSubItem(m_pMy->my_return_row()[j], i, j);
-            }
+            if (m_pMy->my_return_row()[j] != NULL)
+                m_pData.addSubItem(m_pMy->my_return_row()[j], i, j);
         }
-        m_pMy->my_disconnect();
     }
-    catch (char *error)
-    {
-        MessageBox(Window(), error, "ERROR:", MB_OK);
-        return 0;
-    }
+    m_pMy->my_disconnect();
+
     return m_pMy->my_num_rows();
 }

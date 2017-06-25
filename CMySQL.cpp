@@ -1,5 +1,6 @@
 #include "CMySQL.h"
 
+Log* CMySQL::_logger = Log::create<CMySQL>();
 
 //////////////////////////////////////////////
 // (DE)CONSTRUCTOR
@@ -24,14 +25,14 @@ bool CMySQL::my_connect( string db )
     {
 //		if ( mysql_select_db( myData, db.c_str() ) < 0 )
 //		{
-//			throw( "Can't select the database !\n" ) ;
+//			CMySQL::_logger->error( "Can't select the database !\n" ) ;
 //			mysql_close( myData ) ;
 //			return false ;
 //		}
 	}
 	else 
 	{
-		throw( "Can't connect to the mysql server !\n" ) ;
+        CMySQL::_logger->error("Can't connect to the mysql server !\n" ) ;
 		mysql_close( myData ) ;
 		return false ;
 	}
@@ -52,7 +53,7 @@ MYSQL_RES *CMySQL::my_return_query( string query )
 		num_rows = (int) mysql_num_rows( res ) ;
 		num_cols = mysql_num_fields( this->res ) ;
 	}
-	else throw( "Couldn't execute query on the server !\n" ) ;
+    else CMySQL::_logger->error( "Couldn't execute query on the server !\n" ) ;
 
 	return this->res;
 }
@@ -65,13 +66,13 @@ void CMySQL::my_query( string query )
 		num_rows = (int) mysql_num_rows( res ) ;
 		num_cols = mysql_num_fields( this->res ) ;
 	}
-	else throw( "Couldn't execute query on the server !\n" ) ;
+    else CMySQL::_logger->error( "Couldn't execute query on the server !\n" ) ;
 }
 
 MYSQL_ROW CMySQL::my_return_row( void )
 {
 	if ( this->row == NULL )
-		throw( "Row is empty !" );
+        CMySQL::_logger->error( "Row is empty !" );
 	return this->row;
 }
 

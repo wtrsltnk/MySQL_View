@@ -1,6 +1,7 @@
 #ifndef CMYSQL_H
 #define CMYSQL_H
 
+#include "Log.h"
 #include	<stdio.h>
 #include	<string>
 using namespace std;
@@ -9,6 +10,7 @@ using namespace std;
 
 class CMySQL
 {
+    static class Log* _logger;
 private:
 	MYSQL		* myData ;
 	MYSQL_RES	* res ;
