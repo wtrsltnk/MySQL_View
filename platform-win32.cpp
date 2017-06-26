@@ -11,7 +11,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 {
     CApplication app(hInstance);
 
-    auto window = app.createWindow<CMainFrame>();
+    auto window = app.createWindow<CLoginWindow>();
 
     if (window == nullptr) return 0;
 

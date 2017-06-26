@@ -10,6 +10,7 @@ enum class ControlTypes
     Button,
     Combo,
     Edit,
+    RichEdit,
     Label,
     ListView,
     StatusBar,

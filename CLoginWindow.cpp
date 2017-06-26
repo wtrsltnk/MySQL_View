@@ -1,4 +1,5 @@
 #include "CLoginWindow.h"
+#include "MySqlSession.h"
 #include "resource.h"
 #include <iostream>
 
@@ -35,7 +36,11 @@ CLoginWindow::CLoginWindow(class CApplication& application)
         m_Login.setText("Login").create();
         m_Login.onClicked += [this] (const ButtonClickedArgs& args)
         {
-            std::cout << "Clicked login!" << std::endl;
+            auto session = MySqlSession::Create(m_Host.getText(), m_Db.getText(), m_User.getText(), m_Password.getText());
+            if (session != nullptr)
+            {
+                std::cout << "Clicked login!" << std::endl;
+            }
         };
     };
 

@@ -5,6 +5,7 @@
 #include "CListView.h"
 #include "CMySQL.h"
 #include "CEdit.h"
+#include "CRichEdit.h"
 #include "CCombo.h"
 #include "CButton.h"
 #include "CLabel.h"
@@ -27,7 +28,7 @@ private:
     CLabel m_pLimitLbl;
     CEdit m_pLimit;
     CListView m_pData;
-    CEdit m_pSQL;
+    CRichEdit m_pSQL;
     CStatusBar m_pStatus;
 	CMySQL	*m_pMy;
 

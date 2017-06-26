@@ -35,12 +35,16 @@ add_executable(MySQL_View WIN32
     CMainFrame.h
     CMySQL.cpp
     CMySQL.h
+    CRichEdit.cpp
+    CRichEdit.h
     CStatusBar.cpp
     CStatusBar.h
     CWin.cpp
     CWin.h
     Delegate.h
     IApplicationWindow.h
+    MySqlSession.cpp
+    MySqlSession.h
     platform.h
     platform-win32.cpp
     resource.h
